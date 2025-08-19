@@ -41,7 +41,7 @@ fun UserDetailsScreen(navController: NavController,userId: String,viewModel: MyV
     val id = getUserByIdstate.value.success?.user?.id ?:""
     val email = getUserByIdstate.value.success?.user?.email ?:""
     val date_of_account_creation = getUserByIdstate.value.success?.user?.date_of_account_creation ?:""
-    val block = getUserByIdstate.value.success?.user?.block ?:""
+    var block = (getUserByIdstate.value.success?.user?.block ?:0).toInt()
     val address = getUserByIdstate.value.success?.user?.address ?:""
     val PinCode = getUserByIdstate.value.success?.user?.PinCode ?:""
 
@@ -64,7 +64,7 @@ fun UserDetailsScreen(navController: NavController,userId: String,viewModel: MyV
 
             Spacer(modifier = Modifier.fillMaxWidth().padding(0.dp,34.dp,0.dp,0.dp))
 
-            Text(text=if(block==1) "Not Blocked" else "Blocked", fontWeight = FontWeight.Bold, fontSize = 25.sp)
+            Text(text=if(block==0) "Not Blocked" else "Blocked", fontWeight = FontWeight.Bold, fontSize = 25.sp)
 
             Spacer(modifier = Modifier.fillMaxWidth().padding(0.dp,34.dp,0.dp,0.dp))
 
@@ -101,19 +101,21 @@ fun UserDetailsScreen(navController: NavController,userId: String,viewModel: MyV
             Spacer(modifier = Modifier.fillMaxWidth().padding(0.dp,34.dp,0.dp,0.dp))
 
             Button(onClick = {
-                if(isApproved == 0){
+                if(isApproved == 0 && block == 1 || isApproved==0 && block ==0){
                     isApproved = 1
-                   viewModel.updateUser(userId, isApproved.toString())
-                }else{
+                    block = 0
+                   viewModel.updateUser(userId=userId,isApproved= isApproved.toString(), block=block.toString())
+                }else if(isApproved==1 && block==0){
                     isApproved = 0
-                    viewModel.updateUser(userId, isApproved.toString())
+                    block=1
+                    viewModel.updateUser(userId=userId, isApproved=isApproved.toString(),block= block.toString())
                 }
 
             }, modifier = Modifier) {
-                if(isApproved == 0){
+                if(isApproved == 0 && block == 1 || isApproved==0 && block ==0){
                     Text(text="Approve User")
-                }else{
-                    Text(text="Disapprove User")
+                }else if (isApproved==1 && block==0){
+                    Text(text="Block User")
                 }
 
             }
