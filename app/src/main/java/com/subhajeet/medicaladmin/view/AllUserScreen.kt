@@ -11,12 +11,17 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -29,6 +34,7 @@ import com.subhajeet.medicaladmin.view.nav.Routes
 import com.subhajeet.medicaladmin.viewModel.MyViewModel
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AllUserScreen(navController: NavController,viewModel: MyViewModel= hiltViewModel()) {
 
@@ -38,31 +44,57 @@ fun AllUserScreen(navController: NavController,viewModel: MyViewModel= hiltViewM
         viewModel.getAllUsers()
     }
 
-    when{
-        getAllUsersState.value.isLoading ->{
-            CircularProgressIndicator()
-        }
-        getAllUsersState.value.error != null ->{
-            Text(text="Error: ${getAllUsersState.value.error}")
-        }
-        getAllUsersState.value.success?.users?.isNotEmpty() == true->{
+    Scaffold(
 
-            LazyColumn {
-               items(getAllUsersState.value.success?.users?: emptyList()){
+        topBar = {
+            TopAppBar(
+                title = { Text("User Approval Request's") },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = Color.Cyan,   // Background color
+                    titleContentColor = Color.White,       //  Title color
+                    navigationIconContentColor = Color.White, // ≡ Menu icon color
+                    actionIconContentColor = Color.White
+                )
+            )
+        }
+
+
+    ) {innerPadding->
+    when {
+        getAllUsersState.value.isLoading -> {
+            CircularProgressIndicator(modifier = Modifier.padding(innerPadding))
+        }
+
+        getAllUsersState.value.error != null -> {
+            Text(text = "Error: ${getAllUsersState.value.error}")
+        }
+
+        getAllUsersState.value.success?.users?.isNotEmpty() == true -> {
+
+            LazyColumn(modifier = Modifier.padding(innerPadding)) {
+                items(getAllUsersState.value.success?.users ?: emptyList()) {
                     eachCard(
-                        name = it.name, approved = it.isApproved, address = it.address,userId=it.user_id,
-                        onClick = {navController.navigate(Routes.UserDetailsScreen(
-                            userId = it.user_id
-                        ))}
+                        name = it.name,
+                        approved = it.isApproved,
+                        address = it.address,
+                        userId = it.user_id,
+                        onClick = {
+                            navController.navigate(
+                                Routes.UserDetailsScreen(
+                                    userId = it.user_id
+                                )
+                            )
+                        }
                     )
 
 
-               }
+                }
 
             }
 
         }
     }
+}
 
 }
 
@@ -110,7 +142,7 @@ fun eachCard(name: String,approved:Int,address:String,userId:String ,onClick:()-
                 fontStyle = FontStyle.Italic,
                 textAlign = TextAlign.End,
                 modifier = Modifier
-                    .align(Alignment.BottomStart)
+                    .align(Alignment.CenterEnd)
                     .padding(end = 12.dp, bottom = 8.dp)
             )
 
