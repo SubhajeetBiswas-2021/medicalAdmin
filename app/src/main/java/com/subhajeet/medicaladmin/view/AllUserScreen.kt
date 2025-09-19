@@ -1,7 +1,11 @@
 package com.subhajeet.medicaladmin.view
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
@@ -62,7 +66,26 @@ fun AllUserScreen(navController: NavController,viewModel: MyViewModel= hiltViewM
     ) {innerPadding->
     when {
         getAllUsersState.value.isLoading -> {
-            CircularProgressIndicator(modifier = Modifier.padding(innerPadding))
+          //  CircularProgressIndicator(modifier = Modifier.padding(innerPadding))
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color(0x88000000)), // semi-transparent overlay
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                CircularProgressIndicator(
+                    color = Color.Blue,
+                    strokeWidth = 5.dp
+                )
+                Spacer(modifier = Modifier.height(20.dp))
+                Text(
+                    "Loading ...",
+                    color = Color.White,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 24.sp
+                )
+            }
         }
 
         getAllUsersState.value.error != null -> {
@@ -71,7 +94,11 @@ fun AllUserScreen(navController: NavController,viewModel: MyViewModel= hiltViewM
 
         getAllUsersState.value.success?.users?.isNotEmpty() == true -> {
 
-            LazyColumn(modifier = Modifier.padding(innerPadding)) {
+            LazyColumn(modifier = Modifier.fillMaxSize(),contentPadding = PaddingValues(
+                top = innerPadding.calculateTopPadding(),
+                bottom = innerPadding.calculateBottomPadding() + 100.dp
+            )
+            ) {
                 items(getAllUsersState.value.success?.users ?: emptyList()) {
                     eachCard(
                         name = it.name,
