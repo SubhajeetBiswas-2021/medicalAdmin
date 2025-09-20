@@ -12,4 +12,15 @@ sealed class Routes {
     data class UserDetailsScreen(
         val userId:String
     )
+
+    @Serializable
+    object AddProductScreen
+
+    @Serializable
+    object AllOrdersScreen
+
+    @Serializable
+    data class  OrderDetailsScreen(
+        val orderId:String
+    )
 }
