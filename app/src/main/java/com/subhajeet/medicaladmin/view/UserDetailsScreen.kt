@@ -1,5 +1,7 @@
 package com.subhajeet.medicaladmin.view
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -17,6 +19,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
@@ -107,7 +110,16 @@ fun UserDetailsScreen(navController: NavController,userId: String,viewModel: MyV
     ) {
 
         if (getUserByIdstate?.value?.isLoading == true) {
-            Text("Loading...")
+            //Text("Loading...")
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color(0x88000000)), // semi-transparent overlay
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                Text("Loading...")
+            }
         } else {
 
             OutlinedTextField(
